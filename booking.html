@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>E Booking - Book Movie</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🎬 E BOOKING
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+
+            <li>
+                <a href="index.html#now-showing">
+                    Now Showing
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html#featured">
+                    Featured
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+
+    <!-- BOOKING SECTION -->
+
+    <section class="booking-section">
+
+        <h1>🎟️ Book Your Movie</h1>
+
+
+        <div class="booking-container">
+
+
+            <!-- MOVIE -->
+
+            <h2>Select Movie</h2>
+
+            <select id="movieSelect">
+
+                <option value="">
+                    -- Select a Movie --
+                </option>
+
+                <option value="Raka">Raka</option>
+                <option value="Spirit">Spirit</option>
+                <option value="Dragon">Dragon</option>
+                <option value="Varanasi">Varanasi</option>
+                <option value="Paradise">Paradise</option>
+                <option value="Solo Leveling">Solo Leveling</option>
+                <option value="One Piece">One Piece</option>
+                <option value="Demon Slayer">Demon Slayer</option>
+                <option value="Blue Lock">Blue Lock</option>
+                <option value="Black Clover">Black Clover</option>
+
+            </select>
+
+
+
+            <!-- DATE -->
+
+            <h2>Select Date</h2>
+
+            <input
+                type="date"
+                id="bookingDate"
+            >
+
+
+
+            <!-- SHOW TIME -->
+
+            <h2>Select Show Time</h2>
+
+            <select id="showTime">
+
+                <option value="">
+                    -- Select Show Time --
+                </option>
+
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="4:00 PM">4:00 PM</option>
+                <option value="7:00 PM">7:00 PM</option>
+                <option value="10:00 PM">10:00 PM</option>
+
+            </select>
+
+
+
+            <!-- SEATS -->
+
+            <h2>Select Seats</h2>
+
+
+            <!-- CINEMA SCREEN -->
+
+            <div class="cinema-screen">
+                SCREEN
+            </div>
+
+
+            <!-- SEAT CONTAINER -->
+
+            <div class="seat-container">
+
+                <!-- ROW A -->
+
+                <button class="seat">A1</button>
+                <button class="seat">A2</button>
+                <button class="seat">A3</button>
+                <button class="seat">A4</button>
+                <button class="seat">A5</button>
+
+
+                <!-- ROW B -->
+
+                <button class="seat">B1</button>
+                <button class="seat">B2</button>
+                <button class="seat">B3</button>
+                <button class="seat">B4</button>
+                <button class="seat">B5</button>
+
+
+                <!-- ROW C -->
+
+                <button class="seat">C1</button>
+                <button class="seat">C2</button>
+                <button class="seat">C3</button>
+                <button class="seat">C4</button>
+                <button class="seat">C5</button>
+
+
+                <!-- ROW D -->
+
+                <button class="seat">D1</button>
+                <button class="seat">D2</button>
+                <button class="seat">D3</button>
+                <button class="seat">D4</button>
+                <button class="seat">D5</button>
+
+
+                <!-- ROW E -->
+
+                <button class="seat">E1</button>
+                <button class="seat">E2</button>
+                <button class="seat">E3</button>
+                <button class="seat">E4</button>
+                <button class="seat">E5</button>
+
+            </div>
+
+
+
+            <!-- SEAT LEGEND -->
+
+            <div class="seat-legend">
+
+                <div>
+                    <span class="legend-seat available"></span>
+                    Available
+                </div>
+
+                <div>
+                    <span class="legend-seat selected-seat"></span>
+                    Selected
+                </div>
+
+                <div>
+                    <span class="legend-seat occupied"></span>
+                    Occupied
+                </div>
+
+            </div>
+
+
+
+            <!-- BOOKING SUMMARY -->
+
+            <div class="booking-summary">
+
+                <h2>Booking Summary</h2>
+
+                <p>
+                    Selected Seats:
+                    <span id="selectedSeats">0</span>
+                </p>
+
+                <p>
+                    Ticket Price:
+                    ₹<span id="ticketPrice">150</span>
+                </p>
+
+                <p>
+                    Total Amount:
+                    ₹<span id="totalAmount">0</span>
+                </p>
+
+            </div>
+
+
+
+            <!-- CONFIRM BUTTON -->
+
+            <button
+                class="confirm-btn"
+                onclick="confirmBooking()"
+            >
+                Confirm Booking
+            </button>
+
+
+        </div>
+
+    </section>
+
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
