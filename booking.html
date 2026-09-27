@@ -17,7 +17,9 @@
 <body>
 
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
     <nav class="navbar">
 
@@ -28,7 +30,9 @@
         <ul class="nav-links">
 
             <li>
-                <a href="index.html">Home</a>
+                <a href="index.html">
+                    Home
+                </a>
             </li>
 
             <li>
@@ -43,25 +47,56 @@
                 </a>
             </li>
 
+            <li>
+                <a href="index.html#booking-history">
+                    History
+                </a>
+            </li>
+
         </ul>
 
     </nav>
 
 
 
-    <!-- BOOKING SECTION -->
+    <!-- =========================
+         BOOKING SECTION
+    ========================= -->
 
     <section class="booking-section">
 
-        <h1>🎟️ Book Your Movie</h1>
+        <h1>
+            🎟️ Book Your Movie
+        </h1>
 
 
         <div class="booking-container">
 
 
-            <!-- MOVIE -->
+            <!-- =========================
+                 USER NAME
+            ========================= -->
 
-            <h2>Select Movie</h2>
+            <h2>
+                Enter Your Name
+            </h2>
+
+            <input
+                type="text"
+                id="userName"
+                placeholder="Enter your name"
+                autocomplete="name"
+            >
+
+
+
+            <!-- =========================
+                 MOVIE
+            ========================= -->
+
+            <h2>
+                Select Movie
+            </h2>
 
             <select id="movieSelect">
 
@@ -69,24 +104,57 @@
                     -- Select a Movie --
                 </option>
 
-                <option value="Raaka">Raaka</option>
-                <option value="Spirit">Spirit</option>
-                <option value="Dragon">Dragon</option>
-                <option value="Varanasi">Varanasi</option>
-                <option value="Paradise">Paradise</option>
-                <option value="Solo Leveling">Solo Leveling</option>
-                <option value="One Piece">One Piece</option>
-                <option value="Demon Slayer">Demon Slayer</option>
-                <option value="Blue Lock">Blue Lock</option>
-                <option value="Black Clover">Black Clover</option>
+                <option value="Raka">
+                    Raka
+                </option>
+
+                <option value="Spirit">
+                    Spirit
+                </option>
+
+                <option value="Dragon">
+                    Dragon
+                </option>
+
+                <option value="Varanasi">
+                    Varanasi
+                </option>
+
+                <option value="Paradise">
+                    Paradise
+                </option>
+
+                <option value="Solo Leveling">
+                    Solo Leveling
+                </option>
+
+                <option value="One Piece">
+                    One Piece
+                </option>
+
+                <option value="Demon Slayer">
+                    Demon Slayer
+                </option>
+
+                <option value="Blue Lock">
+                    Blue Lock
+                </option>
+
+                <option value="Black Clover">
+                    Black Clover
+                </option>
 
             </select>
 
 
 
-            <!-- DATE -->
+            <!-- =========================
+                 DATE
+            ========================= -->
 
-            <h2>Select Date</h2>
+            <h2>
+                Select Date
+            </h2>
 
             <input
                 type="date"
@@ -95,9 +163,13 @@
 
 
 
-            <!-- SHOW TIME -->
+            <!-- =========================
+                 SHOW TIME
+            ========================= -->
 
-            <h2>Select Show Time</h2>
+            <h2>
+                Select Show Time
+            </h2>
 
             <select id="showTime">
 
@@ -105,19 +177,37 @@
                     -- Select Show Time --
                 </option>
 
-                <option value="10:00 AM">10:00 AM</option>
-                <option value="1:00 PM">1:00 PM</option>
-                <option value="4:00 PM">4:00 PM</option>
-                <option value="7:00 PM">7:00 PM</option>
-                <option value="10:00 PM">10:00 PM</option>
+                <option value="10:00 AM">
+                    10:00 AM
+                </option>
+
+                <option value="1:00 PM">
+                    1:00 PM
+                </option>
+
+                <option value="4:00 PM">
+                    4:00 PM
+                </option>
+
+                <option value="7:00 PM">
+                    7:00 PM
+                </option>
+
+                <option value="10:00 PM">
+                    10:00 PM
+                </option>
 
             </select>
 
 
 
-            <!-- SEATS -->
+            <!-- =========================
+                 SEATS
+            ========================= -->
 
-            <h2>Select Seats</h2>
+            <h2>
+                Select Seats
+            </h2>
 
 
             <!-- CINEMA SCREEN -->
@@ -127,59 +217,214 @@
             </div>
 
 
-            <!-- SEAT CONTAINER -->
+
+            <!-- =========================
+                 SEAT CONTAINER
+            ========================= -->
 
             <div class="seat-container">
 
+
                 <!-- ROW A -->
 
-                <button class="seat">A1</button>
-                <button class="seat">A2</button>
-                <button class="seat">A3</button>
-                <button class="seat">A4</button>
-                <button class="seat">A5</button>
+                <button
+                    class="seat"
+                    data-seat="A1"
+                >
+                    A1
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="A2"
+                >
+                    A2
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="A3"
+                >
+                    A3
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="A4"
+                >
+                    A4
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="A5"
+                >
+                    A5
+                </button>
+
 
 
                 <!-- ROW B -->
 
-                <button class="seat">B1</button>
-                <button class="seat">B2</button>
-                <button class="seat">B3</button>
-                <button class="seat">B4</button>
-                <button class="seat">B5</button>
+                <button
+                    class="seat"
+                    data-seat="B1"
+                >
+                    B1
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="B2"
+                >
+                    B2
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="B3"
+                >
+                    B3
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="B4"
+                >
+                    B4
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="B5"
+                >
+                    B5
+                </button>
+
 
 
                 <!-- ROW C -->
 
-                <button class="seat">C1</button>
-                <button class="seat">C2</button>
-                <button class="seat">C3</button>
-                <button class="seat">C4</button>
-                <button class="seat">C5</button>
+                <button
+                    class="seat"
+                    data-seat="C1"
+                >
+                    C1
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="C2"
+                >
+                    C2
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="C3"
+                >
+                    C3
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="C4"
+                >
+                    C4
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="C5"
+                >
+                    C5
+                </button>
+
 
 
                 <!-- ROW D -->
 
-                <button class="seat">D1</button>
-                <button class="seat">D2</button>
-                <button class="seat">D3</button>
-                <button class="seat">D4</button>
-                <button class="seat">D5</button>
+                <button
+                    class="seat"
+                    data-seat="D1"
+                >
+                    D1
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="D2"
+                >
+                    D2
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="D3"
+                >
+                    D3
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="D4"
+                >
+                    D4
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="D5"
+                >
+                    D5
+                </button>
+
 
 
                 <!-- ROW E -->
 
-                <button class="seat">E1</button>
-                <button class="seat">E2</button>
-                <button class="seat">E3</button>
-                <button class="seat">E4</button>
-                <button class="seat">E5</button>
+                <button
+                    class="seat"
+                    data-seat="E1"
+                >
+                    E1
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="E2"
+                >
+                    E2
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="E3"
+                >
+                    E3
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="E4"
+                >
+                    E4
+                </button>
+
+                <button
+                    class="seat"
+                    data-seat="E5"
+                >
+                    E5
+                </button>
 
             </div>
 
 
 
-            <!-- SEAT LEGEND -->
+            <!-- =========================
+                 SEAT LEGEND
+            ========================= -->
 
             <div class="seat-legend">
 
@@ -202,11 +447,15 @@
 
 
 
-            <!-- BOOKING SUMMARY -->
+            <!-- =========================
+                 BOOKING SUMMARY
+            ========================= -->
 
             <div class="booking-summary">
 
-                <h2>Booking Summary</h2>
+                <h2>
+                    Booking Summary
+                </h2>
 
                 <p>
                     Selected Seats:
@@ -227,7 +476,28 @@
 
 
 
-            <!-- CONFIRM BUTTON -->
+            <!-- =========================
+                 CANCELLATION INFORMATION
+            ========================= -->
+
+            <div class="cancellation-info">
+
+                <h3>
+                    ❌ Cancellation
+                </h3>
+
+                <p>
+                    You can cancel a confirmed booking from
+                    the Booking History section.
+                </p>
+
+            </div>
+
+
+
+            <!-- =========================
+                 CONFIRM BUTTON
+            ========================= -->
 
             <button
                 class="confirm-btn"
@@ -240,6 +510,72 @@
         </div>
 
     </section>
+
+
+
+    <!-- =========================
+         VERIFICATION POPUP
+    ========================= -->
+
+    <div
+        id="verificationPopup"
+        class="verification-popup"
+    >
+
+        <div class="verification-box">
+
+            <button
+                class="verification-close"
+                onclick="closeVerificationPopup()"
+            >
+                ×
+            </button>
+
+
+            <h2>
+                🔐 Verify Your Booking
+            </h2>
+
+
+            <p>
+                Enter the verification code shown below
+                to confirm your ticket.
+            </p>
+
+
+            <div
+                id="verificationCodeDisplay"
+                class="verification-code"
+            >
+                000000
+            </div>
+
+
+            <input
+                type="text"
+                id="verificationInput"
+                placeholder="Enter verification code"
+                maxlength="6"
+                inputmode="numeric"
+            >
+
+
+            <p
+                id="verificationError"
+                class="verification-error"
+            ></p>
+
+
+            <button
+                class="confirm-btn"
+                onclick="verifyBookingCode()"
+            >
+                Verify & Confirm
+            </button>
+
+        </div>
+
+    </div>
 
 
 
