@@ -17,7 +17,9 @@
 <body>
 
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
     <nav class="navbar">
 
@@ -28,7 +30,9 @@
         <ul class="nav-links">
 
             <li>
-                <a href="index.html">Home</a>
+                <a href="index.html">
+                    Home
+                </a>
             </li>
 
             <li>
@@ -43,24 +47,47 @@
                 </a>
             </li>
 
+            <li>
+                <a href="index.html#booking-history">
+                    History
+                </a>
+            </li>
+
         </ul>
 
     </nav>
 
 
 
-    <!-- CONFIRMATION -->
+    <!-- =========================
+         CONFIRMATION
+    ========================= -->
 
     <section class="confirmation-section">
 
         <div class="confirmation-card">
+
+
+            <!-- WATERMARK -->
+
+            <div class="ticket-watermark">
+                E BOOKING • VERIFIED TICKET
+            </div>
+
+
+
+            <!-- SUCCESS ICON -->
 
             <div class="success-icon">
                 ✓
             </div>
 
 
-            <h1>Booking Confirmed!</h1>
+
+            <h1>
+                Booking Confirmed!
+            </h1>
+
 
 
             <p class="success-message">
@@ -69,14 +96,52 @@
 
 
 
-            <!-- BOOKING DETAILS -->
+            <!-- =========================
+                 BOOKING DETAILS
+            ========================= -->
 
             <div class="confirmation-details">
 
 
+                <!-- BOOKING ID -->
+
                 <div class="detail">
 
-                    <span>🎬 Movie</span>
+                    <span>
+                        🎟️ Booking ID
+                    </span>
+
+                    <strong id="confirmBookingId">
+                        -
+                    </strong>
+
+                </div>
+
+
+
+                <!-- USER NAME -->
+
+                <div class="detail">
+
+                    <span>
+                        👤 Name
+                    </span>
+
+                    <strong id="confirmUserName">
+                        -
+                    </strong>
+
+                </div>
+
+
+
+                <!-- MOVIE -->
+
+                <div class="detail">
+
+                    <span>
+                        🎬 Movie
+                    </span>
 
                     <strong id="confirmMovie">
                         -
@@ -86,9 +151,13 @@
 
 
 
+                <!-- DATE -->
+
                 <div class="detail">
 
-                    <span>📅 Date</span>
+                    <span>
+                        📅 Date
+                    </span>
 
                     <strong id="confirmDate">
                         -
@@ -98,9 +167,13 @@
 
 
 
+                <!-- SHOW TIME -->
+
                 <div class="detail">
 
-                    <span>🕐 Show Time</span>
+                    <span>
+                        🕐 Show Time
+                    </span>
 
                     <strong id="confirmTime">
                         -
@@ -110,9 +183,13 @@
 
 
 
+                <!-- SEATS -->
+
                 <div class="detail">
 
-                    <span>💺 Seats</span>
+                    <span>
+                        💺 Seats
+                    </span>
 
                     <strong id="confirmSeats">
                         -
@@ -122,12 +199,32 @@
 
 
 
+                <!-- TOTAL -->
+
                 <div class="detail total">
 
-                    <span>💰 Total Amount</span>
+                    <span>
+                        💰 Total Amount
+                    </span>
 
                     <strong>
                         ₹<span id="confirmAmount">0</span>
+                    </strong>
+
+                </div>
+
+
+
+                <!-- VERIFIED STATUS -->
+
+                <div class="detail">
+
+                    <span>
+                        🔐 Status
+                    </span>
+
+                    <strong class="verified-status">
+                        VERIFIED
                     </strong>
 
                 </div>
@@ -137,18 +234,38 @@
 
 
 
+            <!-- =========================
+                 THANK YOU
+            ========================= -->
+
             <p class="thank-you">
                 Thank you for booking with E Booking! 🎉
             </p>
 
 
 
-            <button
-                class="home-btn"
-                onclick="window.location.href='index.html'"
-            >
-                Back to Home
-            </button>
+            <!-- =========================
+                 BUTTONS
+            ========================= -->
+
+            <div class="confirmation-buttons">
+
+                <button
+                    class="home-btn"
+                    onclick="goHome()"
+                >
+                    🏠 Back to Home
+                </button>
+
+
+                <button
+                    class="home-btn"
+                    onclick="goToHistory()"
+                >
+                    📜 Booking History
+                </button>
+
+            </div>
 
 
         </div>
@@ -157,7 +274,9 @@
 
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
 
     <script src="./script.js"></script>
 
