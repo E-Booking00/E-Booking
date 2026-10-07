@@ -1,128 +1,224 @@
 /* =========================================================
-   E BOOKING - MAIN JAVASCRIPT
+   E BOOKING - COMPLETE SCRIPT.JS
+   Frontend Movie Booking System
 ========================================================= */
-
-
-/* =========================
-   GLOBAL SETTINGS
-========================= */
-
-const ticketPrice = 150;
-
-const bookingStorageKey = "eBookingBookings";
-const userNameStorageKey = "eBookingUserName";
-const pendingBookingKey = "eBookingPendingBooking";
-
-/* Cancellation allowed for 30 minutes */
-const cancellationLimit = 30 * 60 * 1000;
-
-let currentSlide = 0;
 
 
 /* =========================================================
-   CAROUSEL
+   1. GLOBAL SETTINGS
 ========================================================= */
 
-const track = document.querySelector(".carousel-track");
-const dots = document.querySelectorAll(".dot");
+const ticketPrice = 150;
+const maxSeatsPerBooking = 3;
+
+const BOOKINGS_KEY = "eBookingBookings";
+const USER_NAME_KEY = "eBookingUserName";
+const USER_EMAIL_KEY = "eBookingUserEmail";
+const PENDING_BOOKING_KEY = "eBookingPendingBooking";
+
+const CANCELLATION_LIMIT = 30 * 60 * 1000; // 30 minutes
+const OTP_VALIDITY = 10 * 60 * 1000;       // 10 minutes
 
 
-function moveCarousel(direction) {
+/* =========================================================
+   2. EMAILJS SETTINGS
+========================================================= */
 
-    const cards = document.querySelectorAll(
-        ".carousel-track .movie-card"
-    );
-
-    if (cards.length === 0) {
-        return;
-    }
-
-    currentSlide += direction;
-
-    if (currentSlide < 0) {
-        currentSlide = cards.length - 1;
-    }
-
-    if (currentSlide >= cards.length) {
-        currentSlide = 0;
-    }
-
-    updateCarousel();
-}
+const EMAILJS_SERVICE_ID = "service_zaq9wdp";
+const EMAILJS_OTP_TEMPLATE_ID = "template_xy9jkx6";
+const EMAILJS_CONFIRMATION_TEMPLATE_ID = "template_cfth6rq";
+const EMAILJS_PUBLIC_KEY = "FgADu2R62jHrBs2hT";
 
 
-function goToSlide(slide) {
+/* =========================================================
+   3. INITIALIZE EMAILJS
+========================================================= */
 
-    currentSlide = slide;
+document.addEventListener("DOMContentLoaded", function () {
 
-    updateCarousel();
-}
+    if (typeof emailjs !== "undefined") {
 
+        try {
 
-function updateCarousel() {
+            emailjs.init({
+                publicKey: EMAILJS_PUBLIC_KEY
+            });
 
-    const cards = document.querySelectorAll(
-        ".carousel-track .movie-card"
-    );
+            console.log("EmailJS initialized successfully.");
 
-    if (cards.length === 0 || !track) {
-        return;
-    }
+        } catch (error) {
 
-    const gap = parseFloat(
-        getComputedStyle(track).gap
-    ) || 0;
+            console.error(
+                "EmailJS initialization error:",
+                error
+            );
 
-    const cardWidth =
-        cards[0].offsetWidth + gap;
-
-    track.style.transform =
-        "translateX(-" +
-        (currentSlide * cardWidth) +
-        "px";
-
-
-    dots.forEach(function(dot, index) {
-
-        dot.classList.remove("active");
-
-        if (index === currentSlide) {
-            dot.classList.add("active");
         }
 
-    });
-}
+    } else {
 
+        console.error(
+            "EmailJS library not loaded."
+        );
 
-/* Automatic carousel */
-
-if (track) {
-
-    setInterval(function() {
-
-        moveCarousel(1);
-
-    }, 4000);
-
-}
-
-
-/* Update carousel when window size changes */
-
-window.addEventListener("resize", function() {
-
-    if (track) {
-        updateCarousel();
     }
 
 });
 
 
 /* =========================================================
-   BOOK MOVIE
+   4. CAROUSEL
+========================================================= */
+
+let currentSlide = 0;
+
+
+function getCarouselElements() {
+
+    return {
+
+        track:
+            document.querySelector(".carousel-track"),
+
+        cards:
+            document.querySelectorAll(
+                ".carousel-track .movie-card"
+            ),
+
+        dots:
+            document.querySelectorAll(".dot")
+
+    };
+
+}
+
+
+function updateCarousel() {
+
+    const {
+        track,
+        cards,
+        dots
+    } = getCarouselElements();
+
+
+    if (!track || cards.length === 0) {
+        return;
+    }
+
+
+    const cardWidth =
+        cards[0].offsetWidth;
+
+
+    const computedStyle =
+        window.getComputedStyle(track);
+
+
+    const gap =
+        parseFloat(computedStyle.gap) || 0;
+
+
+    const moveAmount =
+        cardWidth + gap;
+
+
+    track.style.transform =
+        `translateX(-${currentSlide * moveAmount}px)`;
+
+
+    dots.forEach(function (dot, index) {
+
+        dot.classList.toggle(
+            "active",
+            index === currentSlide
+        );
+
+    });
+
+}
+
+
+function moveCarousel(direction) {
+
+    const { cards } =
+        getCarouselElements();
+
+
+    if (cards.length === 0) {
+        return;
+    }
+
+
+    currentSlide += direction;
+
+
+    if (currentSlide < 0) {
+
+        currentSlide =
+            cards.length - 1;
+
+    }
+
+
+    if (currentSlide >= cards.length) {
+
+        currentSlide = 0;
+
+    }
+
+
+    updateCarousel();
+
+}
+
+
+function goToSlide(index) {
+
+    const { cards } =
+        getCarouselElements();
+
+
+    if (cards.length === 0) {
+        return;
+    }
+
+
+    if (
+        index < 0 ||
+        index >= cards.length
+    ) {
+        return;
+    }
+
+
+    currentSlide = index;
+
+    updateCarousel();
+
+}
+
+
+window.addEventListener(
+    "resize",
+    function () {
+
+        updateCarousel();
+
+    }
+);
+
+
+/* =========================================================
+   5. BOOK MOVIE
 ========================================================= */
 
 function bookMovie(movieName) {
+
+    if (!movieName) {
+        return;
+    }
+
 
     window.location.href =
         "booking.html?movie=" +
@@ -132,23 +228,39 @@ function bookMovie(movieName) {
 
 
 /* =========================================================
-   LOCAL STORAGE HELPERS
+   6. LOCAL STORAGE HELPERS
 ========================================================= */
 
 function getBookings() {
 
-    const savedBookings =
-        localStorage.getItem(bookingStorageKey);
-
-    if (!savedBookings) {
-        return [];
-    }
-
     try {
 
-        return JSON.parse(savedBookings);
+        const data =
+            localStorage.getItem(
+                BOOKINGS_KEY
+            );
+
+
+        if (!data) {
+            return [];
+        }
+
+
+        const bookings =
+            JSON.parse(data);
+
+
+        return Array.isArray(bookings)
+            ? bookings
+            : [];
+
 
     } catch (error) {
+
+        console.error(
+            "Error reading bookings:",
+            error
+        );
 
         return [];
 
@@ -159,22 +271,170 @@ function getBookings() {
 
 function saveBookings(bookings) {
 
-    localStorage.setItem(
-        bookingStorageKey,
-        JSON.stringify(bookings)
+    try {
+
+        localStorage.setItem(
+            BOOKINGS_KEY,
+            JSON.stringify(bookings)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error saving bookings:",
+            error
+        );
+
+    }
+
+}
+
+
+function getPendingBooking() {
+
+    try {
+
+        const data =
+            localStorage.getItem(
+                PENDING_BOOKING_KEY
+            );
+
+
+        if (!data) {
+            return null;
+        }
+
+
+        return JSON.parse(data);
+
+
+    } catch (error) {
+
+        console.error(
+            "Error reading pending booking:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+function savePendingBooking(booking) {
+
+    try {
+
+        localStorage.setItem(
+            PENDING_BOOKING_KEY,
+            JSON.stringify(booking)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error saving pending booking:",
+            error
+        );
+
+    }
+
+}
+
+
+function removePendingBooking() {
+
+    localStorage.removeItem(
+        PENDING_BOOKING_KEY
     );
 
 }
 
 
 /* =========================================================
-   GENERATE BOOKING ID
+   7. USER DETAILS
+========================================================= */
+
+function saveUserDetails(name, email) {
+
+    localStorage.setItem(
+        USER_NAME_KEY,
+        name
+    );
+
+    localStorage.setItem(
+        USER_EMAIL_KEY,
+        email
+    );
+
+}
+
+
+function loadUserDetails() {
+
+    const nameInput =
+        document.getElementById(
+            "userName"
+        );
+
+
+    const emailInput =
+        document.getElementById(
+            "userEmail"
+        );
+
+
+    if (nameInput) {
+
+        const savedName =
+            localStorage.getItem(
+                USER_NAME_KEY
+            );
+
+
+        if (savedName) {
+
+            nameInput.value =
+                savedName;
+
+        }
+
+    }
+
+
+    if (emailInput) {
+
+        const savedEmail =
+            localStorage.getItem(
+                USER_EMAIL_KEY
+            );
+
+
+        if (savedEmail) {
+
+            emailInput.value =
+                savedEmail;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   8. BOOKING ID
 ========================================================= */
 
 function generateBookingId() {
 
     const randomNumber =
-        Math.floor(100000 + Math.random() * 900000);
+        Math.floor(
+            100000 +
+            Math.random() * 900000
+        );
+
 
     return "EB" + randomNumber;
 
@@ -182,66 +442,441 @@ function generateBookingId() {
 
 
 /* =========================================================
-   GENERATE VERIFICATION CODE
+   9. OTP GENERATION
 ========================================================= */
 
-function generateVerificationCode() {
+function generateOTP() {
 
-    return String(
-        Math.floor(100000 + Math.random() * 900000)
+    return Math.floor(
+        100000 +
+        Math.random() * 900000
+    ).toString();
+
+}
+
+
+/* =========================================================
+   10. ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   11. DATE SETUP
+========================================================= */
+
+function getTodayString() {
+
+    const today =
+        new Date();
+
+
+    const year =
+        today.getFullYear();
+
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+function setupBookingDate() {
+
+    const dateInput =
+        document.getElementById(
+            "bookingDate"
+        );
+
+
+    if (!dateInput) {
+        return;
+    }
+
+
+    const today =
+        getTodayString();
+
+
+    dateInput.min =
+        today;
+
+
+    if (!dateInput.value) {
+
+        dateInput.value =
+            today;
+
+    }
+
+}
+
+
+/* =========================================================
+   12. SHOW TIME HANDLING
+========================================================= */
+
+function updateShowTimes() {
+
+    const dateInput =
+        document.getElementById(
+            "bookingDate"
+        );
+
+
+    const timeSelect =
+        document.getElementById(
+            "showTime"
+        );
+
+
+    if (
+        !dateInput ||
+        !timeSelect
+    ) {
+
+        return;
+
+    }
+
+
+    const selectedDate =
+        dateInput.value;
+
+
+    const today =
+        getTodayString();
+
+
+    const options =
+        timeSelect.querySelectorAll(
+            "option"
+        );
+
+
+    options.forEach(
+        function (option) {
+
+            if (!option.value) {
+                return;
+            }
+
+
+            option.disabled =
+                false;
+
+        }
+    );
+
+
+    if (selectedDate !== today) {
+        return;
+    }
+
+
+    const now =
+        new Date();
+
+
+    const currentHour =
+        now.getHours();
+
+
+    const currentMinute =
+        now.getMinutes();
+
+
+    options.forEach(
+        function (option) {
+
+            if (!option.value) {
+                return;
+            }
+
+
+            const timeParts =
+                option.value.match(
+                    /(\d+):(\d+)\s*(AM|PM)/i
+                );
+
+
+            if (!timeParts) {
+                return;
+            }
+
+
+            let hour =
+                parseInt(
+                    timeParts[1],
+                    10
+                );
+
+
+            const minute =
+                parseInt(
+                    timeParts[2],
+                    10
+                );
+
+
+            const period =
+                timeParts[3].toUpperCase();
+
+
+            if (
+                period === "PM" &&
+                hour !== 12
+            ) {
+
+                hour += 12;
+
+            }
+
+
+            if (
+                period === "AM" &&
+                hour === 12
+            ) {
+
+                hour = 0;
+
+            }
+
+
+            if (
+                hour < currentHour ||
+                (
+                    hour === currentHour &&
+                    minute <= currentMinute
+                )
+            ) {
+
+                option.disabled =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    if (
+        timeSelect.selectedOptions.length &&
+        timeSelect.selectedOptions[0].disabled
+    ) {
+
+        timeSelect.value = "";
+
+    }
+
+}
+
+
+/* =========================================================
+   13. VALIDATE SELECTED SHOW TIME
+========================================================= */
+
+function isPastShowTime(date, time) {
+
+    if (!date || !time) {
+        return false;
+    }
+
+
+    const today =
+        getTodayString();
+
+
+    if (date !== today) {
+        return false;
+    }
+
+
+    const timeParts =
+        time.match(
+            /(\d+):(\d+)\s*(AM|PM)/i
+        );
+
+
+    if (!timeParts) {
+        return false;
+    }
+
+
+    let hour =
+        parseInt(
+            timeParts[1],
+            10
+        );
+
+
+    const minute =
+        parseInt(
+            timeParts[2],
+            10
+        );
+
+
+    const period =
+        timeParts[3].toUpperCase();
+
+
+    if (
+        period === "PM" &&
+        hour !== 12
+    ) {
+
+        hour += 12;
+
+    }
+
+
+    if (
+        period === "AM" &&
+        hour === 12
+    ) {
+
+        hour = 0;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const currentHour =
+        now.getHours();
+
+
+    const currentMinute =
+        now.getMinutes();
+
+
+    if (hour < currentHour) {
+        return true;
+    }
+
+
+    if (
+        hour === currentHour &&
+        minute <= currentMinute
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   14. SEAT HELPERS
+========================================================= */
+
+function getAllSeats() {
+
+    return document.querySelectorAll(
+        ".seat"
     );
 
 }
 
 
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
+function getSelectedSeats() {
 
-function escapeHTML(value) {
+    const seats = [];
 
-    if (value === undefined || value === null) {
-        return "";
-    }
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    document.querySelectorAll(
+        ".seat.selected"
+    ).forEach(
+        function (seat) {
+
+            if (
+                !seat.classList.contains(
+                    "occupied"
+                )
+            ) {
+
+                seats.push(
+                    seat.dataset.seat
+                );
+
+            }
+
+        }
+    );
+
+
+    return seats;
 
 }
 
 
-/* =========================================================
-   USER NAME
-========================================================= */
+function clearSelectedSeats() {
 
-const userNameInput =
-    document.getElementById("userName");
+    document.querySelectorAll(
+        ".seat.selected"
+    ).forEach(
+        function (seat) {
 
-
-if (userNameInput) {
-
-    const savedUserName =
-        localStorage.getItem(userNameStorageKey);
-
-    if (savedUserName) {
-
-        userNameInput.value =
-            savedUserName;
-
-    }
-
-
-    userNameInput.addEventListener(
-        "input",
-        function() {
-
-            localStorage.setItem(
-                userNameStorageKey,
-                userNameInput.value.trim()
+            seat.classList.remove(
+                "selected"
             );
 
         }
@@ -251,101 +886,110 @@ if (userNameInput) {
 
 
 /* =========================================================
-   AUTO SELECT MOVIE
+   15. FIND OCCUPIED SEATS
 ========================================================= */
 
-const urlParams =
-    new URLSearchParams(window.location.search);
+function getOccupiedSeats() {
 
-const selectedMovie =
-    urlParams.get("movie");
-
-const movieSelect =
-    document.getElementById("movieSelect");
+    const movieSelect =
+        document.getElementById(
+            "movieSelect"
+        );
 
 
-if (selectedMovie && movieSelect) {
-
-    movieSelect.value =
-        selectedMovie;
-
-}
+    const dateInput =
+        document.getElementById(
+            "bookingDate"
+        );
 
 
-/* =========================================================
-   DATE - PREVENT PAST DATES
-========================================================= */
-
-const bookingDate =
-    document.getElementById("bookingDate");
+    const timeSelect =
+        document.getElementById(
+            "showTime"
+        );
 
 
-if (bookingDate) {
+    if (
+        !movieSelect ||
+        !dateInput ||
+        !timeSelect
+    ) {
 
-    const today =
-        new Date().toISOString().split("T")[0];
-
-    bookingDate.min = today;
-
-}
-
-
-/* =========================================================
-   SEAT FUNCTIONS
-========================================================= */
-
-function createShowKey(movie, date, time) {
-
-    return movie +
-        "|" +
-        date +
-        "|" +
-        time;
-
-}
-
-
-function getOccupiedSeats(movie, date, time) {
-
-    if (!movie || !date || !time) {
         return [];
+
     }
 
-    const showKey =
-        createShowKey(
-            movie,
-            date,
-            time
-        );
+
+    const movie =
+        movieSelect.value;
+
+
+    const date =
+        dateInput.value;
+
+
+    const time =
+        timeSelect.value;
+
+
+    if (
+        !movie ||
+        !date ||
+        !time
+    ) {
+
+        return [];
+
+    }
+
 
     const bookings =
         getBookings();
 
+
     const occupiedSeats = [];
 
 
-    bookings.forEach(function(booking) {
+    bookings.forEach(
+        function (booking) {
 
-        if (
-            booking.showKey === showKey &&
-            booking.status === "confirmed"
-        ) {
-
-            booking.seats.forEach(function(seat) {
+            if (
+                booking.status === "confirmed" &&
+                booking.movie === movie &&
+                booking.date === date &&
+                booking.showTime === time
+            ) {
 
                 if (
-                    !occupiedSeats.includes(seat)
+                    Array.isArray(
+                        booking.seats
+                    )
                 ) {
 
-                    occupiedSeats.push(seat);
+                    booking.seats.forEach(
+                        function (seat) {
+
+                            if (
+                                !occupiedSeats.includes(
+                                    seat
+                                )
+                            ) {
+
+                                occupiedSeats.push(
+                                    seat
+                                );
+
+                            }
+
+                        }
+                    );
 
                 }
 
-            });
+            }
 
         }
-
-    });
+    );
 
 
     return occupiedSeats;
@@ -354,77 +998,53 @@ function getOccupiedSeats(movie, date, time) {
 
 
 /* =========================================================
-   UPDATE OCCUPIED SEATS
+   16. UPDATE OCCUPIED SEATS
 ========================================================= */
 
 function updateOccupiedSeats() {
 
-    const movieElement =
-        document.getElementById("movieSelect");
-
-    const dateElement =
-        document.getElementById("bookingDate");
-
-    const timeElement =
-        document.getElementById("showTime");
+    const seats =
+        getAllSeats();
 
 
-    if (
-        !movieElement ||
-        !dateElement ||
-        !timeElement
-    ) {
+    if (seats.length === 0) {
         return;
     }
 
 
-    const movie =
-        movieElement.value;
-
-    const date =
-        dateElement.value;
-
-    const time =
-        timeElement.value;
+    clearSelectedSeats();
 
 
     const occupiedSeats =
-        getOccupiedSeats(
-            movie,
-            date,
-            time
-        );
+        getOccupiedSeats();
 
 
-    const allSeats =
-        document.querySelectorAll(".seat");
+    seats.forEach(
+        function (seat) {
+
+            const seatNumber =
+                seat.dataset.seat;
 
 
-    allSeats.forEach(function(seat) {
-
-        const seatName =
-            seat.dataset.seat ||
-            seat.textContent.trim();
+            seat.classList.remove(
+                "occupied"
+            );
 
 
-        seat.classList.remove("occupied");
+            if (
+                occupiedSeats.includes(
+                    seatNumber
+                )
+            ) {
 
-        seat.disabled = false;
+                seat.classList.add(
+                    "occupied"
+                );
 
-
-        if (
-            occupiedSeats.includes(seatName)
-        ) {
-
-            seat.classList.add("occupied");
-
-            seat.classList.remove("selected");
-
-            seat.disabled = true;
+            }
 
         }
-
-    });
+    );
 
 
     updateBookingSummary();
@@ -433,113 +1053,70 @@ function updateOccupiedSeats() {
 
 
 /* =========================================================
-   SEAT SELECTION
+   17. SEAT CLICK
 ========================================================= */
 
-function setupSeats() {
+function handleSeatClick(seat) {
 
-    const allSeats =
-        document.querySelectorAll(".seat");
-
-
-    allSeats.forEach(function(seat) {
-
-        seat.addEventListener(
-            "click",
-            function() {
-
-                if (
-                    seat.classList.contains("occupied") ||
-                    seat.disabled
-                ) {
-                    return;
-                }
+    if (!seat) {
+        return;
+    }
 
 
-                seat.classList.toggle("selected");
+    if (
+        seat.classList.contains(
+            "occupied"
+        )
+    ) {
 
-
-                updateBookingSummary();
-
-            }
+        alert(
+            "This seat is already occupied."
         );
 
-    });
+        return;
 
-}
-
-
-setupSeats();
+    }
 
 
-/* =========================================================
-   MOVIE / DATE / TIME CHANGE
-========================================================= */
+    const selectedSeats =
+        getSelectedSeats();
 
-if (movieSelect) {
 
-    movieSelect.addEventListener(
-        "change",
-        function() {
+    if (
+        !seat.classList.contains(
+            "selected"
+        ) &&
+        selectedSeats.length >=
+        maxSeatsPerBooking
+    ) {
 
-            updateOccupiedSeats();
+        alert(
+            `You can select maximum ${maxSeatsPerBooking} seats.`
+        );
 
-        }
+        return;
+
+    }
+
+
+    seat.classList.toggle(
+        "selected"
     );
 
-}
 
-
-if (bookingDate) {
-
-    bookingDate.addEventListener(
-        "change",
-        function() {
-
-            updateOccupiedSeats();
-
-        }
-    );
-
-}
-
-
-const showTime =
-    document.getElementById("showTime");
-
-
-if (showTime) {
-
-    showTime.addEventListener(
-        "change",
-        function() {
-
-            updateOccupiedSeats();
-
-        }
-    );
+    updateBookingSummary();
 
 }
 
 
 /* =========================================================
-   BOOKING SUMMARY
+   18. BOOKING SUMMARY
 ========================================================= */
 
 function updateBookingSummary() {
 
     const selectedSeats =
-        document.querySelectorAll(
-            ".seat.selected"
-        );
-
-
-    const seatCount =
-        selectedSeats.length;
-
-
-    const totalAmount =
-        seatCount * ticketPrice;
+        getSelectedSeats();
 
 
     const selectedSeatsElement =
@@ -563,7 +1140,9 @@ function updateBookingSummary() {
     if (selectedSeatsElement) {
 
         selectedSeatsElement.textContent =
-            seatCount;
+            selectedSeats.length > 0
+                ? selectedSeats.join(", ")
+                : "None";
 
     }
 
@@ -571,7 +1150,7 @@ function updateBookingSummary() {
     if (ticketPriceElement) {
 
         ticketPriceElement.textContent =
-            ticketPrice;
+            `₹${ticketPrice}`;
 
     }
 
@@ -579,7 +1158,7 @@ function updateBookingSummary() {
     if (totalAmountElement) {
 
         totalAmountElement.textContent =
-            totalAmount;
+            `₹${selectedSeats.length * ticketPrice}`;
 
     }
 
@@ -587,278 +1166,219 @@ function updateBookingSummary() {
 
 
 /* =========================================================
-   CONFIRM BOOKING
+   19. GMAIL VALIDATION
 ========================================================= */
 
-function confirmBooking() {
+function isValidGmail(email) {
 
-    const userNameElement =
-        document.getElementById("userName");
-
-
-    const movieElement =
-        document.getElementById("movieSelect");
+    const gmailPattern =
+        /^[a-zA-Z0-9._%+-]+@gmail\.com$/i;
 
 
-    const dateElement =
-        document.getElementById("bookingDate");
+    return gmailPattern.test(
+        email
+    );
+
+}
 
 
-    const timeElement =
-        document.getElementById("showTime");
+/* =========================================================
+   20. SEND OTP EMAIL
+========================================================= */
 
+async function sendOTPEmail(booking) {
 
     if (
-        !userNameElement ||
-        !movieElement ||
-        !dateElement ||
-        !timeElement
+        typeof emailjs === "undefined"
     ) {
 
-        return;
+        throw new Error(
+            "EmailJS is not loaded."
+        );
 
     }
 
 
-    const userName =
-        userNameElement.value.trim();
+    const templateParams = {
 
+        /* Main variables */
+        name:
+            booking.name,
 
-    const movie =
-        movieElement.value;
+        email:
+            booking.email,
 
+        passcode:
+            booking.verificationCode,
 
-    const date =
-        dateElement.value;
+        time:
+            "10 minutes",
 
+        /* Additional common EmailJS variables */
+        to_email:
+            booking.email,
 
-    const time =
-        timeElement.value;
+        to_name:
+            booking.name,
 
+        otp:
+            booking.verificationCode,
 
-    const selectedSeats =
-        document.querySelectorAll(
-            ".seat.selected"
-        );
-
-
-    /* CHECK NAME */
-
-    if (userName === "") {
-
-        alert(
-            "Please enter your name."
-        );
-
-        userNameElement.focus();
-
-        return;
-
-    }
-
-
-    /* CHECK MOVIE */
-
-    if (movie === "") {
-
-        alert(
-            "Please select a movie."
-        );
-
-        return;
-
-    }
-
-
-    /* CHECK DATE */
-
-    if (date === "") {
-
-        alert(
-            "Please select a date."
-        );
-
-        return;
-
-    }
-
-
-    /* CHECK TIME */
-
-    if (time === "") {
-
-        alert(
-            "Please select a show time."
-        );
-
-        return;
-
-    }
-
-
-    /* CHECK SEATS */
-
-    if (selectedSeats.length === 0) {
-
-        alert(
-            "Please select at least one seat."
-        );
-
-        return;
-
-    }
-
-
-    /* GET SEAT NAMES */
-
-    const seatNames = [];
-
-
-    selectedSeats.forEach(function(seat) {
-
-        const seatName =
-            seat.dataset.seat ||
-            seat.textContent.trim();
-
-
-        seatNames.push(seatName);
-
-    });
-
-
-    /* DOUBLE CHECK OCCUPIED SEATS */
-
-    const occupiedSeats =
-        getOccupiedSeats(
-            movie,
-            date,
-            time
-        );
-
-
-    const alreadyBooked =
-        seatNames.filter(function(seat) {
-
-            return occupiedSeats.includes(seat);
-
-        });
-
-
-    if (alreadyBooked.length > 0) {
-
-        alert(
-            "These seats are already occupied: " +
-            alreadyBooked.join(", ")
-        );
-
-        updateOccupiedSeats();
-
-        return;
-
-    }
-
-
-    /* TOTAL */
-
-    const totalAmount =
-        selectedSeats.length *
-        ticketPrice;
-
-
-    /* BOOKING ID */
-
-    const bookingId =
-        generateBookingId();
-
-
-    /* VERIFICATION CODE */
-
-    const verificationCode =
-        generateVerificationCode();
-
-
-    /* SHOW KEY */
-
-    const showKey =
-        createShowKey(
-            movie,
-            date,
-            time
-        );
-
-
-    /* CREATE PENDING BOOKING */
-
-    const pendingBooking = {
-
-        id: bookingId,
-
-        userName: userName,
-
-        movie: movie,
-
-        date: date,
-
-        time: time,
-
-        seats: seatNames,
-
-        amount: totalAmount,
-
-        showKey: showKey,
-
-        status: "pending",
-
-        verificationCode: verificationCode,
-
-        createdAt:
-            new Date().toISOString()
+        verification_code:
+            booking.verificationCode
 
     };
 
 
-    /* SAVE PENDING BOOKING */
-
-    localStorage.setItem(
-        pendingBookingKey,
-        JSON.stringify(
-            pendingBooking
-        )
+    console.log(
+        "Sending OTP to:",
+        booking.email
     );
 
 
-    /* SAVE USER NAME */
-
-    localStorage.setItem(
-        userNameStorageKey,
-        userName
+    console.log(
+        "OTP template parameters:",
+        templateParams
     );
 
 
-    /* OPEN VERIFICATION POPUP */
+    try {
 
-    openVerificationPopup(
-        verificationCode
-    );
+        const response =
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_OTP_TEMPLATE_ID,
+                templateParams
+            );
+
+
+        console.log(
+            "EMAILJS OTP SUCCESS:",
+            response.status,
+            response.text
+        );
+
+
+        return response;
+
+    } catch (error) {
+
+        console.error(
+            "EMAILJS OTP ERROR:",
+            error
+        );
+
+
+        throw error;
+
+    }
 
 }
 
 
 /* =========================================================
-   VERIFICATION POPUP
+   21. SEND CONFIRMATION EMAIL
 ========================================================= */
 
-function openVerificationPopup(code) {
+async function sendBookingConfirmationEmail(
+    booking
+) {
+
+    if (
+        typeof emailjs === "undefined"
+    ) {
+
+        throw new Error(
+            "EmailJS is not loaded."
+        );
+
+    }
+
+
+    const templateParams = {
+
+        name:
+            booking.name,
+
+        email:
+            booking.email,
+
+        to_email:
+            booking.email,
+
+        to_name:
+            booking.name,
+
+        booking_id:
+            booking.bookingId,
+
+        movie:
+            booking.movie,
+
+        date:
+            booking.date,
+
+        show_time:
+            booking.showTime,
+
+        seats:
+            booking.seats.join(", "),
+
+        amount:
+            `₹${booking.amount}`
+
+    };
+
+
+    console.log(
+        "Sending confirmation email to:",
+        booking.email
+    );
+
+
+    try {
+
+        const response =
+            await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_CONFIRMATION_TEMPLATE_ID,
+                templateParams
+            );
+
+
+        console.log(
+            "EMAILJS CONFIRMATION SUCCESS:",
+            response.status,
+            response.text
+        );
+
+
+        return response;
+
+    } catch (error) {
+
+        console.error(
+            "EMAILJS CONFIRMATION ERROR:",
+            error
+        );
+
+
+        throw error;
+
+    }
+
+}
+
+
+/* =========================================================
+   22. OPEN VERIFICATION POPUP
+========================================================= */
+
+function openVerificationPopup() {
 
     const popup =
         document.getElementById(
             "verificationPopup"
-        );
-
-
-    const codeDisplay =
-        document.getElementById(
-            "verificationCodeDisplay"
         );
 
 
@@ -879,44 +1399,39 @@ function openVerificationPopup(code) {
     }
 
 
-    if (codeDisplay) {
-
-        codeDisplay.textContent =
-            code;
-
-    }
+    popup.style.display =
+        "flex";
 
 
     if (input) {
 
         input.value = "";
 
+
+        setTimeout(
+            function () {
+
+                input.focus();
+
+            },
+            100
+        );
+
     }
 
 
     if (error) {
 
-        error.textContent = "";
+        error.textContent =
+            "";
 
     }
-
-
-    popup.classList.add("show");
-
-
-    setTimeout(function() {
-
-        if (input) {
-            input.focus();
-        }
-
-    }, 100);
 
 }
 
 
 /* =========================================================
-   CLOSE VERIFICATION POPUP
+   23. CLOSE VERIFICATION POPUP
 ========================================================= */
 
 function closeVerificationPopup() {
@@ -929,7 +1444,8 @@ function closeVerificationPopup() {
 
     if (popup) {
 
-        popup.classList.remove("show");
+        popup.style.display =
+            "none";
 
     }
 
@@ -937,10 +1453,431 @@ function closeVerificationPopup() {
 
 
 /* =========================================================
-   VERIFY BOOKING CODE
+   24. CONFIRM BOOKING
 ========================================================= */
 
-function verifyBookingCode() {
+async function confirmBooking() {
+
+    const nameInput =
+        document.getElementById(
+            "userName"
+        );
+
+
+    const emailInput =
+        document.getElementById(
+            "userEmail"
+        );
+
+
+    const movieSelect =
+        document.getElementById(
+            "movieSelect"
+        );
+
+
+    const dateInput =
+        document.getElementById(
+            "bookingDate"
+        );
+
+
+    const timeSelect =
+        document.getElementById(
+            "showTime"
+        );
+
+
+    const confirmButton =
+        document.getElementById(
+            "confirmBookingButton"
+        );
+
+
+    if (
+        !nameInput ||
+        !emailInput ||
+        !movieSelect ||
+        !dateInput ||
+        !timeSelect
+    ) {
+
+        console.error(
+            "Booking form elements are missing."
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        nameInput.value.trim();
+
+
+    const email =
+        emailInput.value.trim();
+
+
+    const movie =
+        movieSelect.value;
+
+
+    const date =
+        dateInput.value;
+
+
+    const showTime =
+        timeSelect.value;
+
+
+    const seats =
+        getSelectedSeats();
+
+
+    /* -------------------------
+       VALIDATION
+    ------------------------- */
+
+    if (!name) {
+
+        alert(
+            "Please enter your name."
+        );
+
+        nameInput.focus();
+
+        return;
+
+    }
+
+
+    if (!email) {
+
+        alert(
+            "Please enter your Gmail address."
+        );
+
+        emailInput.focus();
+
+        return;
+
+    }
+
+
+    if (!isValidGmail(email)) {
+
+        alert(
+            "Please enter a valid Gmail address.\nExample: example@gmail.com"
+        );
+
+        emailInput.focus();
+
+        return;
+
+    }
+
+
+    if (!movie) {
+
+        alert(
+            "Please select a movie."
+        );
+
+        movieSelect.focus();
+
+        return;
+
+    }
+
+
+    if (!date) {
+
+        alert(
+            "Please select a booking date."
+        );
+
+        dateInput.focus();
+
+        return;
+
+    }
+
+
+    if (
+        date <
+        getTodayString()
+    ) {
+
+        alert(
+            "Please select today or a future date."
+        );
+
+        return;
+
+    }
+
+
+    if (!showTime) {
+
+        alert(
+            "Please select a show time."
+        );
+
+        timeSelect.focus();
+
+        return;
+
+    }
+
+
+    if (
+        isPastShowTime(
+            date,
+            showTime
+        )
+    ) {
+
+        alert(
+            "This show time has already passed. Please select another time."
+        );
+
+        return;
+
+    }
+
+
+    if (seats.length === 0) {
+
+        alert(
+            "Please select at least one seat."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        seats.length >
+        maxSeatsPerBooking
+    ) {
+
+        alert(
+            `You can select maximum ${maxSeatsPerBooking} seats.`
+        );
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       CHECK OCCUPIED SEATS
+    ------------------------- */
+
+    const occupiedSeats =
+        getOccupiedSeats();
+
+
+    const alreadyOccupied =
+        seats.filter(
+            function (seat) {
+
+                return occupiedSeats.includes(
+                    seat
+                );
+
+            }
+        );
+
+
+    if (
+        alreadyOccupied.length > 0
+    ) {
+
+        alert(
+            "These seats are already occupied: " +
+            alreadyOccupied.join(", ")
+        );
+
+
+        updateOccupiedSeats();
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       CHECK EXISTING OTP
+    ------------------------- */
+
+    const existingPending =
+        getPendingBooking();
+
+
+    if (existingPending) {
+
+        const age =
+            Date.now() -
+            existingPending.otpCreatedAt;
+
+
+        if (
+            age < OTP_VALIDITY
+        ) {
+
+            alert(
+                "A verification code has already been sent to your Gmail. Please enter that code."
+            );
+
+
+            openVerificationPopup();
+
+            return;
+
+        } else {
+
+            removePendingBooking();
+
+        }
+
+    }
+
+
+    /* -------------------------
+       CREATE BOOKING
+    ------------------------- */
+
+    const booking = {
+
+        bookingId:
+            generateBookingId(),
+
+        name:
+            name,
+
+        email:
+            email,
+
+        movie:
+            movie,
+
+        date:
+            date,
+
+        showTime:
+            showTime,
+
+        seats:
+            seats,
+
+        amount:
+            seats.length * ticketPrice,
+
+        status:
+            "pending",
+
+        verificationCode:
+            generateOTP(),
+
+        otpCreatedAt:
+            Date.now(),
+
+        createdAt:
+            Date.now()
+
+    };
+
+
+    saveUserDetails(
+        name,
+        email
+    );
+
+
+    savePendingBooking(
+        booking
+    );
+
+
+    /* -------------------------
+       DISABLE BUTTON
+    ------------------------- */
+
+    if (confirmButton) {
+
+        confirmButton.disabled =
+            true;
+
+
+        confirmButton.textContent =
+            "Sending OTP...";
+
+    }
+
+
+    try {
+
+        await sendOTPEmail(
+            booking
+        );
+
+
+        console.log(
+            "OTP email sent successfully."
+        );
+
+
+        alert(
+            "A 6-digit verification code has been sent to:\n" +
+            email
+        );
+
+
+        openVerificationPopup();
+
+
+    } catch (error) {
+
+        console.error(
+            "OTP sending failed:",
+            error
+        );
+
+
+        removePendingBooking();
+
+
+        alert(
+            "OTP could not be sent.\n\n" +
+            "Please check your EmailJS settings and try again."
+        );
+
+    } finally {
+
+        if (confirmButton) {
+
+            confirmButton.disabled =
+                false;
+
+
+            confirmButton.textContent =
+                "Confirm Booking";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   25. VERIFY OTP
+========================================================= */
+
+async function verifyBookingCode() {
 
     const input =
         document.getElementById(
@@ -948,71 +1885,37 @@ function verifyBookingCode() {
         );
 
 
-    const error =
+    const errorElement =
         document.getElementById(
             "verificationError"
         );
 
 
-    const savedPending =
-        localStorage.getItem(
-            pendingBookingKey
+    const verifyButton =
+        document.getElementById(
+            "verifyBookingButton"
         );
 
 
-    if (!savedPending) {
-
-        if (error) {
-
-            error.textContent =
-                "Booking session expired. Please try again.";
-
-        }
-
+    if (!input) {
         return;
-
-    }
-
-
-    let booking;
-
-
-    try {
-
-        booking =
-            JSON.parse(savedPending);
-
-    } catch (e) {
-
-        if (error) {
-
-            error.textContent =
-                "Something went wrong. Please try again.";
-
-        }
-
-        return;
-
     }
 
 
     const enteredCode =
-        input
-            ? input.value.trim()
-            : "";
+        input.value.trim();
 
-
-    /* CHECK CODE */
 
     if (
-        enteredCode !==
-        booking.verificationCode
+        !/^\d{6}$/.test(
+            enteredCode
+        )
     ) {
 
-        if (error) {
+        if (errorElement) {
 
-            error.textContent =
-                "❌ Incorrect verification code. Try again.";
+            errorElement.textContent =
+                "Please enter the 6-digit OTP.";
 
         }
 
@@ -1021,49 +1924,218 @@ function verifyBookingCode() {
     }
 
 
-    /* CONFIRM BOOKING */
-
-    booking.status =
-        "confirmed";
+    const pendingBooking =
+        getPendingBooking();
 
 
-    /* GET EXISTING BOOKINGS */
+    if (!pendingBooking) {
+
+        if (errorElement) {
+
+            errorElement.textContent =
+                "No pending booking found. Please book again.";
+
+        }
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       OTP EXPIRY
+    ------------------------- */
+
+    const otpAge =
+        Date.now() -
+        pendingBooking.otpCreatedAt;
+
+
+    if (
+        otpAge >= OTP_VALIDITY
+    ) {
+
+        removePendingBooking();
+
+
+        if (errorElement) {
+
+            errorElement.textContent =
+                "OTP has expired. Please book again.";
+
+        }
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       OTP CHECK
+    ------------------------- */
+
+    if (
+        enteredCode !==
+        pendingBooking.verificationCode
+    ) {
+
+        if (errorElement) {
+
+            errorElement.textContent =
+                "Incorrect OTP. Please try again.";
+
+        }
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       CHECK SEATS AGAIN
+    ------------------------- */
+
+    const occupiedSeats =
+        getOccupiedSeats();
+
+
+    const conflictingSeats =
+        pendingBooking.seats.filter(
+            function (seat) {
+
+                return occupiedSeats.includes(
+                    seat
+                );
+
+            }
+        );
+
+
+    if (
+        conflictingSeats.length > 0
+    ) {
+
+        removePendingBooking();
+
+
+        if (errorElement) {
+
+            errorElement.textContent =
+                "Sorry, these seats are already occupied: " +
+                conflictingSeats.join(", ");
+
+        }
+
+
+        updateOccupiedSeats();
+
+        return;
+
+    }
+
+
+    /* -------------------------
+       DISABLE VERIFY BUTTON
+    ------------------------- */
+
+    if (verifyButton) {
+
+        verifyButton.disabled =
+            true;
+
+
+        verifyButton.textContent =
+            "Confirming...";
+
+    }
+
+
+    /* -------------------------
+       CREATE CONFIRMED BOOKING
+    ------------------------- */
+
+    const confirmedBooking = {
+
+        ...pendingBooking,
+
+        status:
+            "confirmed",
+
+        confirmedAt:
+            Date.now()
+
+    };
+
 
     const bookings =
         getBookings();
 
 
-    /* SAVE CONFIRMED BOOKING */
-
-    bookings.push(booking);
-
-
-    saveBookings(bookings);
+    bookings.push(
+        confirmedBooking
+    );
 
 
-    /* SAVE LAST BOOKING */
+    saveBookings(
+        bookings
+    );
+
+
+    /* -------------------------
+       SAVE FOR CONFIRMATION PAGE
+    ------------------------- */
 
     localStorage.setItem(
         "bookingData",
         JSON.stringify(
-            booking
+            confirmedBooking
         )
     );
 
 
-    /* REMOVE PENDING BOOKING */
-
-    localStorage.removeItem(
-        pendingBookingKey
-    );
+    removePendingBooking();
 
 
-    /* CLOSE POPUP */
+    /* -------------------------
+       SEND CONFIRMATION EMAIL
+    ------------------------- */
+
+    try {
+
+        await sendBookingConfirmationEmail(
+            confirmedBooking
+        );
+
+
+        console.log(
+            "Confirmation email sent."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Confirmation email failed:",
+            error
+        );
+
+        /*
+           Booking remains confirmed
+           even if confirmation email fails.
+        */
+
+    }
+
+
+    /* -------------------------
+       CLOSE POPUP
+    ------------------------- */
 
     closeVerificationPopup();
 
 
-    /* GO TO CONFIRMATION */
+    /* -------------------------
+       GO TO CONFIRMATION PAGE
+    ------------------------- */
 
     window.location.href =
         "confirmation.html";
@@ -1072,20 +2144,44 @@ function verifyBookingCode() {
 
 
 /* =========================================================
-   ENTER KEY FOR VERIFICATION
+   26. OTP INPUT
 ========================================================= */
 
-const verificationInput =
-    document.getElementById(
-        "verificationInput"
+function setupOTPInput() {
+
+    const input =
+        document.getElementById(
+            "verificationInput"
+        );
+
+
+    if (!input) {
+        return;
+    }
+
+
+    input.addEventListener(
+        "input",
+        function () {
+
+            input.value =
+                input.value
+                    .replace(
+                        /\D/g,
+                        ""
+                    )
+                    .slice(
+                        0,
+                        6
+                    );
+
+        }
     );
 
 
-if (verificationInput) {
-
-    verificationInput.addEventListener(
+    input.addEventListener(
         "keydown",
-        function(event) {
+        function (event) {
 
             if (
                 event.key === "Enter"
@@ -1102,32 +2198,19 @@ if (verificationInput) {
 
 
 /* =========================================================
-   LOAD CONFIRMATION DATA
+   27. LOAD CONFIRMATION DATA
 ========================================================= */
 
 function loadConfirmationData() {
 
-    const confirmMovie =
-        document.getElementById(
-            "confirmMovie"
-        );
-
-
-    if (!confirmMovie) {
-        return;
-    }
-
-
-    const savedBooking =
+    const bookingData =
         localStorage.getItem(
             "bookingData"
         );
 
 
-    if (!savedBooking) {
-
+    if (!bookingData) {
         return;
-
     }
 
 
@@ -1137,123 +2220,91 @@ function loadConfirmationData() {
     try {
 
         booking =
-            JSON.parse(savedBooking);
+            JSON.parse(
+                bookingData
+            );
 
     } catch (error) {
+
+        console.error(
+            "Invalid booking data:",
+            error
+        );
 
         return;
 
     }
 
 
-    const confirmBookingId =
-        document.getElementById(
-            "confirmBookingId"
-        );
+    const fields = {
 
+        confirmUserName:
+            booking.name,
 
-    const confirmUserName =
-        document.getElementById(
-            "confirmUserName"
-        );
+        confirmUserEmail:
+            booking.email,
 
+        confirmMovie:
+            booking.movie,
 
-    const confirmDate =
-        document.getElementById(
-            "confirmDate"
-        );
+        confirmDate:
+            booking.date,
 
+        confirmTime:
+            booking.showTime,
 
-    const confirmTime =
-        document.getElementById(
-            "confirmTime"
-        );
-
-
-    const confirmSeats =
-        document.getElementById(
-            "confirmSeats"
-        );
-
-
-    const confirmAmount =
-        document.getElementById(
-            "confirmAmount"
-        );
-
-
-    if (confirmBookingId) {
-
-        confirmBookingId.textContent =
-            booking.id || "-";
-
-    }
-
-
-    if (confirmUserName) {
-
-        confirmUserName.textContent =
-            booking.userName || "-";
-
-    }
-
-
-    if (confirmMovie) {
-
-        confirmMovie.textContent =
-            booking.movie || "-";
-
-    }
-
-
-    if (confirmDate) {
-
-        confirmDate.textContent =
-            booking.date || "-";
-
-    }
-
-
-    if (confirmTime) {
-
-        confirmTime.textContent =
-            booking.time || "-";
-
-    }
-
-
-    if (confirmSeats) {
-
-        confirmSeats.textContent =
-            Array.isArray(booking.seats)
+        confirmSeats:
+            Array.isArray(
+                booking.seats
+            )
                 ? booking.seats.join(", ")
-                : booking.seats || "-";
+                : "",
 
-    }
+        confirmAmount:
+            `₹${booking.amount}`,
+
+        bookingId:
+            booking.bookingId
+
+    };
 
 
-    if (confirmAmount) {
+    Object.keys(fields).forEach(
+        function (id) {
 
-        confirmAmount.textContent =
-            booking.amount || 0;
+            const element =
+                document.getElementById(
+                    id
+                );
 
-    }
+
+            if (element) {
+
+                element.textContent =
+                    fields[id];
+
+            }
+
+        }
+    );
 
 }
 
 
-loadConfirmationData();
-
-
 /* =========================================================
-   CHECK CANCELLATION TIME
+   28. CANCELLATION
 ========================================================= */
 
 function canCancelBooking(booking) {
 
+    if (!booking) {
+        return false;
+    }
+
+
     if (
-        !booking ||
-        !booking.createdAt
+        booking.status !==
+        "confirmed"
     ) {
 
         return false;
@@ -1261,280 +2312,30 @@ function canCancelBooking(booking) {
     }
 
 
-    const bookingTime =
-        new Date(
-            booking.createdAt
-        ).getTime();
-
-
-    const currentTime =
-        new Date().getTime();
-
-
-    const timePassed =
-        currentTime - bookingTime;
-
-
-    return timePassed <= cancellationLimit;
-
-}
-
-
-/* =========================================================
-   GET REMAINING CANCELLATION TIME
-========================================================= */
-
-function getRemainingCancellationTime(booking) {
-
-    if (
-        !booking ||
-        !booking.createdAt
-    ) {
-
-        return 0;
-
+    if (!booking.confirmedAt) {
+        return false;
     }
 
 
-    const bookingTime =
-        new Date(
-            booking.createdAt
-        ).getTime();
+    const elapsed =
+        Date.now() -
+        booking.confirmedAt;
 
 
-    const currentTime =
-        new Date().getTime();
-
-
-    const timePassed =
-        currentTime - bookingTime;
-
-
-    const remaining =
-        cancellationLimit - timePassed;
-
-
-    return Math.max(
-        0,
-        remaining
+    return (
+        elapsed <=
+        CANCELLATION_LIMIT
     );
 
 }
 
 
-/* =========================================================
-   BOOKING HISTORY
-========================================================= */
-
-function loadBookingHistory() {
-
-    const historyContainer =
-        document.getElementById(
-            "historyContainer"
-        );
-
-
-    if (!historyContainer) {
-        return;
-    }
-
-
-    const bookings =
-        getBookings();
-
-
-    if (bookings.length === 0) {
-
-        historyContainer.innerHTML =
-            '<p class="no-history">No booking history available.</p>';
-
-        return;
-
-    }
-
-
-    /* NEWEST BOOKINGS FIRST */
-
-    const sortedBookings =
-        [...bookings].reverse();
-
-
-    let historyHTML = "";
-
-
-    sortedBookings.forEach(function(booking) {
-
-        const statusClass =
-            booking.status === "confirmed"
-                ? "history-confirmed"
-                : "history-cancelled";
-
-
-        const statusText =
-            booking.status === "confirmed"
-                ? "CONFIRMED"
-                : "CANCELLED";
-
-
-        const seatsText =
-            Array.isArray(booking.seats)
-                ? booking.seats.join(", ")
-                : booking.seats;
-
-
-        /* =========================
-           CANCELLATION BUTTON
-        ========================= */
-
-        let cancellationHTML = "";
-
-
-        if (
-            booking.status === "confirmed"
-        ) {
-
-            if (
-                canCancelBooking(booking)
-            ) {
-
-                const remainingTime =
-                    getRemainingCancellationTime(
-                        booking
-                    );
-
-
-                const remainingMinutes =
-                    Math.ceil(
-                        remainingTime /
-                        (60 * 1000)
-                    );
-
-
-                cancellationHTML = `
-
-                    <button
-                        class="cancel-booking-btn"
-                        onclick="cancelBooking('${booking.id}')"
-                    >
-                        ❌ Cancel Booking
-                    </button>
-
-                    <p class="cancel-time">
-
-                        ⏳ Cancellation available for
-                        ${remainingMinutes}
-                        minute(s)
-
-                    </p>
-
-                `;
-
-            } else {
-
-                cancellationHTML = `
-
-                    <p class="cancel-expired">
-
-                        ⏳ Cancellation period expired
-                        (30 minutes)
-
-                    </p>
-
-                `;
-
-            }
-
-        } else {
-
-            cancellationHTML = `
-
-                <p class="cancelled-message">
-
-                    This booking has been cancelled.
-
-                </p>
-
-            `;
-
-        }
-
-
-        /* =========================
-           HISTORY CARD
-        ========================= */
-
-        historyHTML += `
-
-            <div class="history-card">
-
-                <div class="history-header">
-
-                    <h3>
-                        🎬 ${escapeHTML(booking.movie)}
-                    </h3>
-
-                    <span class="${statusClass}">
-                        ${statusText}
-                    </span>
-
-                </div>
-
-
-                <div class="history-details">
-
-                    <p>
-                        🎟️ <strong>Booking ID:</strong>
-                        ${escapeHTML(booking.id)}
-                    </p>
-
-                    <p>
-                        👤 <strong>Name:</strong>
-                        ${escapeHTML(booking.userName)}
-                    </p>
-
-                    <p>
-                        📅 <strong>Date:</strong>
-                        ${escapeHTML(booking.date)}
-                    </p>
-
-                    <p>
-                        🕐 <strong>Time:</strong>
-                        ${escapeHTML(booking.time)}
-                    </p>
-
-                    <p>
-                        💺 <strong>Seats:</strong>
-                        ${escapeHTML(seatsText)}
-                    </p>
-
-                    <p>
-                        💰 <strong>Amount:</strong>
-                        ₹${escapeHTML(booking.amount)}
-                    </p>
-
-                </div>
-
-
-                ${cancellationHTML}
-
-            </div>
-
-        `;
-
-    });
-
-
-    historyContainer.innerHTML =
-        historyHTML;
-
-}
-
-
-/* =========================================================
-   CANCEL BOOKING
-========================================================= */
-
 function cancelBooking(bookingId) {
+
+    if (!bookingId) {
+        return;
+    }
+
 
     const bookings =
         getBookings();
@@ -1542,15 +2343,20 @@ function cancelBooking(bookingId) {
 
     const bookingIndex =
         bookings.findIndex(
-            function(booking) {
+            function (booking) {
 
-                return booking.id === bookingId;
+                return (
+                    booking.bookingId ===
+                    bookingId
+                );
 
             }
         );
 
 
-    if (bookingIndex === -1) {
+    if (
+        bookingIndex === -1
+    ) {
 
         alert(
             "Booking not found."
@@ -1565,10 +2371,9 @@ function cancelBooking(bookingId) {
         bookings[bookingIndex];
 
 
-    /* CHECK ALREADY CANCELLED */
-
     if (
-        booking.status === "cancelled"
+        booking.status !==
+        "confirmed"
     ) {
 
         alert(
@@ -1580,28 +2385,20 @@ function cancelBooking(bookingId) {
     }
 
 
-    /* =====================================================
-       CHECK 30-MINUTE CANCELLATION LIMIT
-    ===================================================== */
-
     if (
-        !canCancelBooking(booking)
+        !canCancelBooking(
+            booking
+        )
     ) {
 
         alert(
-            "Cancellation period has expired. " +
-            "Bookings can only be cancelled within 30 minutes."
+            "Cancellation is only available within 30 minutes of booking confirmation."
         );
-
-
-        loadBookingHistory();
 
         return;
 
     }
 
-
-    /* CONFIRM CANCELLATION */
 
     const confirmed =
         confirm(
@@ -1614,39 +2411,222 @@ function cancelBooking(bookingId) {
     }
 
 
-    /* CANCEL BOOKING */
+    bookings[bookingIndex] = {
 
-    booking.status =
-        "cancelled";
+        ...booking,
 
+        status:
+            "cancelled",
 
-    booking.cancelledAt =
-        new Date().toISOString();
+        cancelledAt:
+            Date.now()
 
-
-    saveBookings(bookings);
-
-
-    /* UPDATE HISTORY */
-
-    loadBookingHistory();
+    };
 
 
-    /* UPDATE SEATS IF BOOKING PAGE IS OPEN */
-
-    updateOccupiedSeats();
+    saveBookings(
+        bookings
+    );
 
 
     alert(
-        "Booking cancelled successfully. " +
-        "The seats are now available again."
+        "Your booking has been cancelled successfully."
     );
+
+
+    loadBookingHistory();
+
+    updateOccupiedSeats();
 
 }
 
 
 /* =========================================================
-   HOME BUTTON
+   29. BOOKING HISTORY
+========================================================= */
+
+function loadBookingHistory() {
+
+    const container =
+        document.getElementById(
+            "bookingHistory"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const bookings =
+        getBookings();
+
+
+    if (bookings.length === 0) {
+
+        container.innerHTML =
+            "<p>No booking history found.</p>";
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
+
+    bookings
+        .slice()
+        .reverse()
+        .forEach(
+            function (booking) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "history-card";
+
+
+                const status =
+                    booking.status ===
+                    "confirmed"
+
+                        ? "Confirmed"
+
+                        : "Cancelled";
+
+
+                const statusClass =
+                    booking.status ===
+                    "confirmed"
+
+                        ? "confirmed"
+
+                        : "cancelled";
+
+
+                let cancelButton =
+                    "";
+
+
+                if (
+                    booking.status ===
+                    "confirmed" &&
+                    canCancelBooking(
+                        booking
+                    )
+                ) {
+
+                    cancelButton = `
+
+                        <button
+                            class="cancel-btn"
+                            onclick="cancelBooking('${escapeHTML(booking.bookingId)}')"
+                        >
+                            Cancel Booking
+                        </button>
+
+                    `;
+
+                }
+
+
+                card.innerHTML = `
+
+                    <div class="history-content">
+
+                        <h3>
+                            ${escapeHTML(
+                                booking.movie
+                            )}
+                        </h3>
+
+                        <p>
+                            <strong>Booking ID:</strong>
+                            ${escapeHTML(
+                                booking.bookingId
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Name:</strong>
+                            ${escapeHTML(
+                                booking.name
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Email:</strong>
+                            ${escapeHTML(
+                                booking.email
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Date:</strong>
+                            ${escapeHTML(
+                                booking.date
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Time:</strong>
+                            ${escapeHTML(
+                                booking.showTime
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Seats:</strong>
+                            ${escapeHTML(
+                                Array.isArray(
+                                    booking.seats
+                                )
+                                    ? booking.seats.join(", ")
+                                    : ""
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Amount:</strong>
+                            ₹${escapeHTML(
+                                booking.amount
+                            )}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            <span class="status ${statusClass}">
+                                ${status}
+                            </span>
+
+                        </p>
+
+                        ${cancelButton}
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   30. NAVIGATION
 ========================================================= */
 
 function goHome() {
@@ -1657,84 +2637,181 @@ function goHome() {
 }
 
 
-/* =========================================================
-   HISTORY BUTTON
-========================================================= */
-
 function goToHistory() {
 
     window.location.href =
-        "index.html#booking-history";
+        "index.html#history";
 
 }
 
 
 /* =========================================================
-   LOAD HISTORY
+   31. AUTO SELECT MOVIE FROM URL
 ========================================================= */
 
-loadBookingHistory();
+function selectMovieFromURL() {
 
-
-/* =========================================================
-   SCROLL REVEAL
-========================================================= */
-
-const revealElements =
-    document.querySelectorAll(
-        ".movies-section, footer"
-    );
-
-
-if (
-    "IntersectionObserver" in window
-) {
-
-    const revealObserver =
-        new IntersectionObserver(
-
-            function(entries) {
-
-                entries.forEach(
-                    function(entry) {
-
-                        if (
-                            entry.isIntersecting
-                        ) {
-
-                            entry.target.classList.add(
-                                "show-section"
-                            );
-
-
-                            revealObserver.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    }
-                );
-
-            },
-
-            {
-                threshold: 0.15
-            }
-
+    const movieSelect =
+        document.getElementById(
+            "movieSelect"
         );
 
 
-    revealElements.forEach(
-        function(element) {
-
-            element.classList.add(
-                "hidden-section"
-            );
+    if (!movieSelect) {
+        return;
+    }
 
 
-            revealObserver.observe(
-                element
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const movie =
+        params.get("movie");
+
+
+    if (!movie) {
+        return;
+    }
+
+
+    const decodedMovie =
+        decodeURIComponent(
+            movie
+        );
+
+
+    const matchingOption =
+        Array.from(
+            movieSelect.options
+        ).find(
+            function (option) {
+
+                return (
+                    option.value.toLowerCase() ===
+                    decodedMovie.toLowerCase()
+                );
+
+            }
+        );
+
+
+    if (matchingOption) {
+
+        movieSelect.value =
+            matchingOption.value;
+
+    }
+
+}
+
+
+/* =========================================================
+   32. SETUP BOOKING PAGE
+========================================================= */
+
+function setupBookingPage() {
+
+    const movieSelect =
+        document.getElementById(
+            "movieSelect"
+        );
+
+
+    const dateInput =
+        document.getElementById(
+            "bookingDate"
+        );
+
+
+    const timeSelect =
+        document.getElementById(
+            "showTime"
+        );
+
+
+    if (
+        !movieSelect &&
+        !dateInput &&
+        !timeSelect
+    ) {
+
+        return;
+
+    }
+
+
+    loadUserDetails();
+
+    setupBookingDate();
+
+    selectMovieFromURL();
+
+    updateShowTimes();
+
+    updateOccupiedSeats();
+
+    updateBookingSummary();
+
+
+    if (movieSelect) {
+
+        movieSelect.addEventListener(
+            "change",
+            function () {
+
+                updateOccupiedSeats();
+
+            }
+        );
+
+    }
+
+
+    if (dateInput) {
+
+        dateInput.addEventListener(
+            "change",
+            function () {
+
+                updateShowTimes();
+
+                updateOccupiedSeats();
+
+            }
+        );
+
+    }
+
+
+    if (timeSelect) {
+
+        timeSelect.addEventListener(
+            "change",
+            function () {
+
+                updateOccupiedSeats();
+
+            }
+        );
+
+    }
+
+
+    getAllSeats().forEach(
+        function (seat) {
+
+            seat.addEventListener(
+                "click",
+                function () {
+
+                    handleSeatClick(
+                        seat
+                    );
+
+                }
             );
 
         }
@@ -1744,13 +2821,86 @@ if (
 
 
 /* =========================================================
-   INITIALIZE OCCUPIED SEATS
+   33. GENERAL PAGE SETUP
 ========================================================= */
 
-if (
-    document.querySelector(".seat")
-) {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    updateOccupiedSeats();
+        setupBookingPage();
 
-}
+        setupOTPInput();
+
+        loadConfirmationData();
+
+        loadBookingHistory();
+
+        updateCarousel();
+
+    }
+);
+
+
+/* =========================================================
+   34. CLOSE POPUP WHEN CLICKING OUTSIDE
+========================================================= */
+
+document.addEventListener(
+    "click",
+    function (event) {
+
+        const popup =
+            document.getElementById(
+                "verificationPopup"
+            );
+
+
+        if (!popup) {
+            return;
+        }
+
+
+        if (
+            event.target === popup
+        ) {
+
+            closeVerificationPopup();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   35. AUTO REFRESH SHOW TIMES
+========================================================= */
+
+setInterval(
+    function () {
+
+        const bookingDate =
+            document.getElementById(
+                "bookingDate"
+            );
+
+
+        const showTime =
+            document.getElementById(
+                "showTime"
+            );
+
+
+        if (
+            bookingDate &&
+            showTime
+        ) {
+
+            updateShowTimes();
+
+        }
+
+    },
+    30000
+);
