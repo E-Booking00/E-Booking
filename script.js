@@ -1962,8 +1962,7 @@ function goHome() {
 
 function goToHistory() {
 
-    window.location.href =
-        "index.html#history";
+    window.location.href = "index.html#booking-history";
 }
 
 
