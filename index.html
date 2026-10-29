@@ -1,95 +1,53 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>E Booking</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =========================
-         LOADING SCREEN
-    ========================= -->
-
+    <!-- LOADING SCREEN -->
     <div class="loading-screen">
-
         <div class="loading-content">
-
             <div class="loading-logo">
                 <img src="images/logo.png" alt="E Booking Logo">
             </div>
 
-            <h1>
-                E BOOKING
-            </h1>
-
-            <p>
-                Your Movie Experience Starts Here
-            </p>
+            <h1>E BOOKING</h1>
+            <p>Your Movie Experience Starts Here</p>
 
             <div class="loading-bar">
                 <div class="loading-progress"></div>
             </div>
 
-            <span class="loading-text">
-                Loading...
-            </span>
-
+            <span class="loading-text">Loading...</span>
         </div>
-
     </div>
 
-
-    <!-- =========================
-         NAVBAR
-    ========================= -->
-
+    <!-- NAVBAR -->
     <nav class="navbar">
-
         <div class="logo">
             <img src="images/logo.png" alt="E Booking Logo">
         </div>
 
         <ul class="nav-links">
-
-            <li>
-                <a href="#now-showing">Now Showing</a>
-            </li>
-
-            <li>
-                <a href="#featured">Featured</a>
-            </li>
-
-            <li>
-                <a href="#coming-soon">Coming Soon</a>
-            </li>
-
-            <!-- BOOKING HISTORY -->
-            <li>
-                <a href="#booking-history">History</a>
-            </li>
-
+            <li><a href="#now-showing">Now Showing</a></li>
+            <li><a href="#featured">Featured</a></li>
+            <li><a href="#coming-soon">Coming Soon</a></li>
+            <li><a href="#booking-history">History</a></li>
+            <li><a href="#project-documents">Project Documents</a></li>
         </ul>
-
     </nav>
 
-
-    <!-- =========================
-         HERO BANNER
-    ========================= -->
-
+    <!-- HERO BANNER -->
     <section class="hero">
-
         <div class="hero-content">
-
-            <p class="hero-small">
-                WELCOME TO E BOOKING
-            </p>
+            <p class="hero-small">WELCOME TO E BOOKING</p>
 
             <h1>
                 Book Your Movie.<br>
@@ -102,7 +60,6 @@
             </p>
 
             <div class="hero-buttons">
-
                 <a href="#now-showing" class="hero-btn primary-btn">
                     🎟️ Book Now
                 </a>
@@ -110,384 +67,224 @@
                 <a href="#featured" class="hero-btn secondary-btn">
                     ⭐ Explore Movies
                 </a>
-
             </div>
-
         </div>
 
-
         <!-- HERO ANIMATION -->
-
         <div class="hero-glow"></div>
-
         <div class="hero-circle circle-one"></div>
-
         <div class="hero-circle circle-two"></div>
-
     </section>
 
-
-    <!-- =========================
-         NOW SHOWING
-    ========================= -->
-
+    <!-- NOW SHOWING -->
     <section class="movies-section" id="now-showing">
-
-        <h2>
-            🎟️ Now Showing
-        </h2>
+        <h2>🎟️ Now Showing</h2>
 
         <div class="carousel">
-
-            <button class="carousel-btn left" onclick="moveCarousel(-1)">
-                ❮
-            </button>
+            <button class="carousel-btn left"
+                onclick="moveCarousel(-1)"
+                aria-label="Previous movies">❮</button>
 
             <div class="carousel-track">
 
                 <div class="movie-card">
-
-                    <img src="images/raka.jpg" class="movie-poster">
-
-                    <h3>
-                        Raka
-                    </h3>
-
-                    <p>
-                        ⭐ 8.5/10
-                    </p>
-
-                    <button onclick="bookMovie('Raka')">
-                        Book Now
-                    </button>
-
+                    <img src="images/raka.jpg" class="movie-poster" alt="Raka poster">
+                    <h3>Raka</h3>
+                    <p>⭐ 8.5/10</p>
+                    <button onclick="bookMovie('Raka')">Book Now</button>
                 </div>
 
-
                 <div class="movie-card">
-
-                    <img src="images/spirit.jpg" class="movie-poster">
-
-                    <h3>
-                        Spirit
-                    </h3>
-
-                    <p>
-                        ⭐ 8.7/10
-                    </p>
-
-                    <button onclick="bookMovie('Spirit')">
-                        Book Now
-                    </button>
-
+                    <img src="images/spirit.jpg" class="movie-poster" alt="Spirit poster">
+                    <h3>Spirit</h3>
+                    <p>⭐ 8.7/10</p>
+                    <button onclick="bookMovie('Spirit')">Book Now</button>
                 </div>
 
-
                 <div class="movie-card">
-
-                    <img src="images/dragon.jpg" class="movie-poster">
-
-                    <h3>
-                        Dragon
-                    </h3>
-
-                    <p>
-                        ⭐ 8.2/10
-                    </p>
-
-                    <button onclick="bookMovie('Dragon')">
-                        Book Now
-                    </button>
-
+                    <img src="images/dragon.jpg" class="movie-poster" alt="Dragon poster">
+                    <h3>Dragon</h3>
+                    <p>⭐ 8.2/10</p>
+                    <button onclick="bookMovie('Dragon')">Book Now</button>
                 </div>
 
-
                 <div class="movie-card">
-
-                    <img src="images/varanasi.jpg" class="movie-poster">
-
-                    <h3>
-                        Varanasi
-                    </h3>
-
-                    <p>
-                        ⭐ 8.6/10
-                    </p>
-
-                    <button onclick="bookMovie('Varanasi')">
-                        Book Now
-                    </button>
-
+                    <img src="images/varanasi.jpg" class="movie-poster" alt="Varanasi poster">
+                    <h3>Varanasi</h3>
+                    <p>⭐ 8.6/10</p>
+                    <button onclick="bookMovie('Varanasi')">Book Now</button>
                 </div>
 
-
                 <div class="movie-card">
-
-                    <img src="images/paradise.jpg" class="movie-poster">
-
-                    <h3>
-                        Paradise
-                    </h3>
-
-                    <p>
-                        ⭐ 8.4/10
-                    </p>
-
-                    <button onclick="bookMovie('Paradise')">
-                        Book Now
-                    </button>
-
+                    <img src="images/paradise.jpg" class="movie-poster" alt="Paradise poster">
+                    <h3>Paradise</h3>
+                    <p>⭐ 8.4/10</p>
+                    <button onclick="bookMovie('Paradise')">Book Now</button>
                 </div>
 
             </div>
 
-
-            <button class="carousel-btn right" onclick="moveCarousel(1)">
-                ❯
-            </button>
-
+            <button class="carousel-btn right"
+                onclick="moveCarousel(1)"
+                aria-label="Next movies">❯</button>
         </div>
 
-
-        <!-- DOTS -->
-
+        <!-- CAROUSEL DOTS -->
         <div class="carousel-dots">
-
             <span class="dot active" onclick="goToSlide(0)"></span>
-
             <span class="dot" onclick="goToSlide(1)"></span>
-
             <span class="dot" onclick="goToSlide(2)"></span>
-
             <span class="dot" onclick="goToSlide(3)"></span>
-
             <span class="dot" onclick="goToSlide(4)"></span>
-
         </div>
-
     </section>
 
-
-    <!-- =========================
-         FEATURED
-    ========================= -->
-
+    <!-- FEATURED MOVIES -->
     <section class="movies-section" id="featured">
-
-        <h2>
-            ⭐ Featured Movies
-        </h2>
+        <h2>⭐ Featured Movies</h2>
 
         <div class="movie-container">
 
             <div class="movie-card">
-
-                <img src="images/solo leveling.jpg" class="movie-poster">
-
-                <h3>
-                    Solo Leveling
-                </h3>
-
-                <p>
-                    ⭐ 9.0/10
-                </p>
-
-                <button onclick="bookMovie('Solo Leveling')">
-                    Book Now
-                </button>
-
+                <img src="images/solo leveling.jpg" class="movie-poster" alt="Solo Leveling poster">
+                <h3>Solo Leveling</h3>
+                <p>⭐ 9.0/10</p>
+                <button onclick="bookMovie('Solo Leveling')">Book Now</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/one piece.jpg" class="movie-poster">
-
-                <h3>
-                    One Piece
-                </h3>
-
-                <p>
-                    ⭐ 9.2/10
-                </p>
-
-                <button onclick="bookMovie('One Piece')">
-                    Book Now
-                </button>
-
+                <img src="images/one piece.jpg" class="movie-poster" alt="One Piece poster">
+                <h3>One Piece</h3>
+                <p>⭐ 9.2/10</p>
+                <button onclick="bookMovie('One Piece')">Book Now</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/demon slayer.jpg" class="movie-poster">
-
-                <h3>
-                    Demon Slayer
-                </h3>
-
-                <p>
-                    ⭐ 9.1/10
-                </p>
-
-                <button onclick="bookMovie('Demon Slayer')">
-                    Book Now
-                </button>
-
+                <img src="images/demon slayer.jpg" class="movie-poster" alt="Demon Slayer poster">
+                <h3>Demon Slayer</h3>
+                <p>⭐ 9.1/10</p>
+                <button onclick="bookMovie('Demon Slayer')">Book Now</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/blue lock.jpg" class="movie-poster">
-
-                <h3>
-                    Blue Lock
-                </h3>
-
-                <p>
-                    ⭐ 8.8/10
-                </p>
-
-                <button onclick="bookMovie('Blue Lock')">
-                    Book Now
-                </button>
-
+                <img src="images/blue lock.jpg" class="movie-poster" alt="Blue Lock poster">
+                <h3>Blue Lock</h3>
+                <p>⭐ 8.8/10</p>
+                <button onclick="bookMovie('Blue Lock')">Book Now</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/black clover.jpg" class="movie-poster">
-
-                <h3>
-                    Black Clover
-                </h3>
-
-                <p>
-                    ⭐ 8.9/10
-                </p>
-
-                <button onclick="bookMovie('Black Clover')">
-                    Book Now
-                </button>
-
+                <img src="images/black clover.jpg" class="movie-poster" alt="Black Clover poster">
+                <h3>Black Clover</h3>
+                <p>⭐ 8.9/10</p>
+                <button onclick="bookMovie('Black Clover')">Book Now</button>
             </div>
 
         </div>
-
     </section>
 
-
-    <!-- =========================
-         COMING SOON
-    ========================= -->
-
+    <!-- COMING SOON -->
     <section class="movies-section" id="coming-soon">
-
-        <h2>
-            🔜 Coming Soon
-        </h2>
+        <h2>🔜 Coming Soon</h2>
 
         <div class="movie-container">
 
             <div class="movie-card">
-
-                <img src="images/if wishes could kill 2.jpg" class="movie-poster">
-
-                <h3>
-                    If Wish Could Kill 2
-                </h3>
-
-                <p>
-                    ⭐ Coming Soon
-                </p>
-
-                <button>
-                    Coming Soon
-                </button>
-
+                <img src="images/if wishes could kill 2.jpg"
+                    class="movie-poster" alt="If Wish Could Kill 2 poster">
+                <h3>If Wish Could Kill 2</h3>
+                <p>⭐ Coming Soon</p>
+                <button type="button">Coming Soon</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/all of us are dead 2.jpg" class="movie-poster">
-
-                <h3>
-                    All of Us Are Dead 2
-                </h3>
-
-                <p>
-                    ⭐ Coming Soon
-                </p>
-
-                <button>
-                    Coming Soon
-                </button>
-
+                <img src="images/all of us are dead 2.jpg"
+                    class="movie-poster" alt="All of Us Are Dead 2 poster">
+                <h3>All of Us Are Dead 2</h3>
+                <p>⭐ Coming Soon</p>
+                <button type="button">Coming Soon</button>
             </div>
 
-
             <div class="movie-card">
-
-                <img src="images/weak hero 3.jpg" class="movie-poster">
-
-                <h3>
-                    Weak Hero 3
-                </h3>
-
-                <p>
-                    ⭐ Coming Soon
-                </p>
-
-                <button>
-                    Coming Soon
-                </button>
-
+                <img src="images/weak hero 3.jpg"
+                    class="movie-poster" alt="Weak Hero 3 poster">
+                <h3>Weak Hero 3</h3>
+                <p>⭐ Coming Soon</p>
+                <button type="button">Coming Soon</button>
             </div>
 
         </div>
-
     </section>
 
-
-    <!-- =========================
-         BOOKING HISTORY
-    ========================= -->
-
+    <!-- BOOKING HISTORY -->
     <section class="movies-section" id="booking-history">
+        <h2>📜 Booking History</h2>
 
-        <h2>
-            📜 Booking History
-        </h2>
-
-       <div id="bookingHistory" class="history-container">
-
-            <p class="no-history">
-                No booking history available.
-            </p>
-
+        <div id="bookingHistory" class="history-container">
+            <p class="no-history">No booking history available.</p>
         </div>
-
     </section>
 
+    <!-- PROJECT DOCUMENTS -->
+    <section class="movies-section" id="project-documents">
+        <h2>📁 Project Documents</h2>
 
-    <!-- =========================
-         FOOTER
-    ========================= -->
-
-    <footer>
-
-        <p>
-            © 2026 E Booking | Book Movies Easily
+        <p class="documents-subtitle">
+            Explore the E Booking project abstract, presentation and live website.
         </p>
 
-    </footer>
+        <div class="movie-container document-container">
 
+            <!-- ABSTRACT PDF -->
+            <div class="movie-card document-card">
+                <div class="document-icon">📄</div>
+                <h3>Project Abstract</h3>
+                <p>Read the abstract of the E Booking project.</p>
+
+                <a href="./E_Booking_Abstract.pdf"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="document-btn">
+                    View Abstract
+                </a>
+            </div>
+
+            <!-- POWERPOINT PRESENTATION -->
+            <div class="movie-card document-card">
+                <div class="document-icon">📊</div>
+                <h3>Project Presentation</h3>
+                <p>Download the E Booking project PowerPoint presentation.</p>
+
+                <a href="./E-BOOKING%20FINAL%20PPT.pptx"
+                   download="E-BOOKING-FINAL-PPT.pptx"
+                   class="document-btn">
+                    Download PPT
+                </a>
+            </div>
+
+            <!-- LIVE WEBSITE -->
+            <div class="movie-card document-card">
+                <div class="document-icon">🎬</div>
+                <h3>Live Website</h3>
+                <p>Visit the deployed E Booking movie-booking website.</p>
+
+                <a href="https://e-booking00.github.io/E-Booking/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="document-btn">
+                    Open Website
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 E Booking | Book Movies Easily</p>
+    </footer>
 
     <script src="script.js"></script>
 
 </body>
-
 </html>
